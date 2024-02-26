@@ -239,6 +239,7 @@ out_unlock:
 	mutex_unlock(&q->sysfs_lock);
 	return err;
 }
+EXPORT_SYMBOL(elevator_init);
 
 void elevator_exit(struct request_queue *q, struct elevator_queue *e)
 {
@@ -251,6 +252,7 @@ void elevator_exit(struct request_queue *q, struct elevator_queue *e)
 
 	kobject_put(&e->kobj);
 }
+EXPORT_SYMBOL(elevator_exit);
 
 static inline void __elv_rqhash_del(struct request *rq)
 {
