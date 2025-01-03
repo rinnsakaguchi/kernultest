@@ -1921,6 +1921,7 @@ static void nbd_disconnect_and_put(struct nbd_device *nbd)
 	if (test_and_clear_bit(NBD_HAS_CONFIG_REF,
 			       &nbd->config->runtime_flags))
 		nbd_config_put(nbd);
+		clear_bit(NBD_RT_BOUND, &nbd->config->runtime_flags);
 }
 
 static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
