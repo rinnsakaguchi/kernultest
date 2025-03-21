@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  compile:
+   docker:
+      - image: ghcr.io/neutron-toolchains/docker-image:arch-neutron
+   steps:
+      - run:
+          command: |
+           git clone https://github.com/rinnsakaguchi/Rinn kernel 
+           cd kernel
+           git clone https://github.com/rinnsakaguchi/myscripts -b master
+           chmod +x myscripts/clang-setup.sh
+           chmod +x myscripts/surya.sh
+           source ./myscripts/clang-setup.sh
+           sudo apt-get install device-tree-compiler
+           ./myscripts/surya.sh
+workflows:
+  version: 2.1
+  cooking:
+    jobs:
+      - compile
+      
