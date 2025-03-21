@@ -12,7 +12,6 @@ jobs:
            chmod +x myscripts/clang-setup.sh
            chmod +x myscripts/surya.sh
            source ./myscripts/clang-setup.sh
-           sudo apt-get install device-tree-compiler
            ./myscripts/surya.sh
 workflows:
   version: 2.1
