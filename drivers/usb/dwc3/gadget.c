@@ -1271,7 +1271,6 @@ static u32 dwc3_calc_trbs_left(struct dwc3_ep *dep)
 		 * active TRBs at this point, then there is no TRB available.
 		 */
 		req = next_request(&dep->started_list);
-		if (req && req->num_trbs)
 			return 0;
 
 		return DWC3_TRB_NUM - 1;
