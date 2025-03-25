@@ -1,140 +1,102 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# Compile script for FSociety kernel
-# Copyright (C) 2020-2021 Adithya R.
+# Copyright (C) 2023 Edwiin Kusuma Jaya (ryuzenn)
+#
+# Simple Local Kernel Build Script
+#
+# Configured for Poco x3 NFC / Surya custom kernel source
+#
+# Setup build env with akhilnarang/scripts repo
+#
+# Use this script on root of kernel directory
 
 SECONDS=0 # builtin bash timer
-ZIPNAME="FSociety-surya-$(date '+%Y%m%d-%H%M').zip"
-TC_DIR="$(pwd)/tc/clang-20"
-AK3_DIR="$(pwd)/android/AnyKernel3"
+LOCAL_DIR=/home/kidz/
+ZIPNAME="Swordx-OSS-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
+TC_DIR="${LOCAL_DIR}toolchain"
+CLANG_DIR="${TC_DIR}/clang-rastamod"
+GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
+GCC_32_DIR="${LOCAL_DIR}toolchain/arm-linux-androideabi-4.9"
+AK3_DIR="${LOCAL_DIR}/AnyKernel3"
 DEFCONFIG="surya_defconfig"
 
-if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
-   head=$(git rev-parse --verify HEAD 2>/dev/null); then
-	ZIPNAME="${ZIPNAME::-4}-$(echo $head | cut -c1-8).zip"
+export PATH="$CLANG_DIR/bin:$PATH"
+export KBUILD_BUILD_USER="Kidz"
+export KBUILD_BUILD_HOST="Ubuntud"
+export LD_LIBRARY_PATH="$CLANG_DIR/lib:$LD_LIBRARY_PATH"
+export KBUILD_BUILD_VERSION="1"
+export LOCALVERSION
+
+if ! [ -d "${CLANG_DIR}" ]; then
+echo "Clang not found! Cloning to ${TC_DIR}..."
+if ! git clone --depth=1 -b clang-21.0 https://gitlab.com/kutemeikito/rastamod69-clang ${CLANG_DIR}; then
+echo "Cloning failed! Aborting..."
+exit 1
+fi
 fi
 
-export PATH="$TC_DIR/bin:$PATH"
-
-sync_repo() {
-    local dir=$1
-    local repo_url=$2
-    local branch=$3
-	local update=$4
-
-    if [ -d "$dir" ]; then
-        if $update; then
-			# Fetch the latest changes
-            git -C "$dir" fetch origin --quiet
-
-            # Compare local and remote commits
-            LOCAL_COMMIT=$(git -C "$dir" rev-parse HEAD)
-            REMOTE_COMMIT=$(git -C "$dir" rev-parse "origin/$branch")
-
-            # If there are changes, reset and log the update
-            if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
-                git -C "$dir" reset --quiet --hard "origin/$branch"
-                LATEST_COMMIT=$(git -C "$dir" log -1 --oneline)
-                echo -e "Updated $repo_url to: $LATEST_COMMIT\n" | tee -a "$dir/updates.txt"
-            else
-                echo "No changes found for $repo_url. Skipping update."
-            fi
-        fi
-    else
-        # Clone the repository if it doesn't exist
-        echo "Cloning $repo_url to $dir..."
-        if ! git clone --quiet --depth=1 -b "$branch" "$repo_url" "$dir"; then
-            echo "Cloning failed! Aborting..."
-            exit 1
-        fi
-    fi
-}
-
-if [[ $1 = "-u" || $1 = "--update" ]]; then
-    sync_repo $AK3_DIR "https://github.com/rd-stuffs/AnyKernel3.git" "FSociety" true
-    sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" true
-	exit
-else
-    sync_repo $AK3_DIR "https://github.com/rd-stuffs/AnyKernel3.git" "FSociety" false
-    sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" false
+if ! [ -d "${GCC_64_DIR}" ]; then
+echo "gcc not found! Cloning to ${GCC_64_DIR}..."
+if ! git clone --depth=1 -b lineage-19.1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git ${GCC_64_DIR}; then
+echo "Cloning failed! Aborting..."
+exit 1
+fi
 fi
 
-if [ ! -d "$AK3_DIR" ] || [ ! -d "$TC_DIR" ]; then
-    echo "Error: Required directories are missing. Aborting the build process."
-    exit 1
+if ! [ -d "${GCC_32_DIR}" ]; then
+echo "gcc_32 not found! Cloning to ${GCC_32_DIR}..."
+if ! git clone --depth=1 -b lineage-19.1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git ${GCC_32_DIR}; then
+echo "Cloning failed! Aborting..."
+exit 1
+fi
 fi
 
-if [[ $1 = "-r" || $1 = "--regen" ]]; then
-	make $DEFCONFIG savedefconfig
-	cp out/defconfig arch/arm64/configs/$DEFCONFIG
-	echo -e "\nSuccessfully regenerated defconfig at $DEFCONFIG"
-	exit
-fi
-
-if [[ $1 = "-rf" || $1 = "--regen-full" ]]; then
-	make $DEFCONFIG
-	cp out/.config arch/arm64/configs/$DEFCONFIG
-	echo -e "\nSuccessfully regenerated full defconfig at $DEFCONFIG"
-	exit
-fi
-
-CLEAN_BUILD=false
-ENABLE_KSU=false
-
-for arg in "$@"; do
-	case $arg in
-		-c|--clean)
-			CLEAN_BUILD=true
-			;;
-		-s|--su)
-			ENABLE_KSU=true
-			ZIPNAME="${ZIPNAME/FSociety-surya/FSociety-KSU}"
-			;;
-		*)
-			echo "Unknown argument: $arg"
-			exit 1
-			;;
-	esac
-done
-
-if $CLEAN_BUILD; then
-	echo "Cleaning output directory..."
-	rm -rf out
-fi
-
-if $ENABLE_KSU; then
-	echo "Building with KSU support..."
-	KSU_DEFCONFIG="ksu_${DEFCONFIG}"
-	KSU_DEFCONFIG_PATH="arch/arm64/configs/${KSU_DEFCONFIG}"
-	cp arch/arm64/configs/$DEFCONFIG $KSU_DEFCONFIG_PATH
-	sed -i 's/# CONFIG_KSU is not set/CONFIG_KSU=y/g' $KSU_DEFCONFIG_PATH
-	trap '[[ -f $KSU_DEFCONFIG_PATH ]] && rm -f $KSU_DEFCONFIG_PATH' EXIT
-fi
+mkdir -p out
+make O=out ARCH=arm64 $DEFCONFIG
 
 echo -e "\nStarting compilation...\n"
-if $ENABLE_KSU; then
-	make $KSU_DEFCONFIG
-else
-	make $DEFCONFIG
-fi
-make -j$(nproc --all) LLVM=1 Image.gz dtb.img dtbo.img 2> >(tee log.txt >&2) || exit $?
+make -j$(nproc --all) O=out \
+					  ARCH=arm64 \
+					  CC=clang \
+					  LD=ld.lld \
+					  AR=llvm-ar \
+					  AS=llvm-as \
+					  NM=llvm-nm \
+					  OBJCOPY=llvm-objcopy \
+					  OBJDUMP=llvm-objdump \
+					  STRIP=llvm-strip \
+					  CROSS_COMPILE=aarch64-linux-android- \
+					  CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					  CLANG_TRIPLE=aarch64-linux-gnu- \
+					  Image.gz-dtb \
+                                          dtb.img \
+					  dtbo.img
 
-kernel="out/arch/arm64/boot/Image.gz"
-dtb="out/arch/arm64/boot/dtb.img"
-dtbo="out/arch/arm64/boot/dtbo.img"
-
-if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
-	echo -e "\nKernel compiled successfully! Zipping up...\n"
-	cp -r $AK3_DIR AnyKernel3
-	cp $kernel $dtb $dtbo AnyKernel3
-	cd AnyKernel3
-	git checkout FSociety &> /dev/null
-	zip -r9 "../$ZIPNAME" * -x .git modules\* patch\* ramdisk\* README.md *placeholder
-	cd ..
-	rm -rf AnyKernel3
-	echo -e "\nCompleted in $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) !"
-	echo "Zip: $ZIPNAME"
-else
-	echo -e "\nCompilation failed!"
-	exit 1
+if [ -f "out/arch/arm64/boot/Image.gz-dtb" ] && [ -f "out/arch/arm64/boot/dtbo.img" ]; then
+echo -e "\nKernel compiled succesfully! Zipping up...\n"
+if [ -d "$AK3_DIR" ]; then
+cp -r $AK3_DIR AnyKernel3
+elif ! git clone -q https://github.com/ardia-kun/AnyKernel3; then
+echo -e "\nAnyKernel3 repo not found locally and cloning failed! Aborting..."
+exit 1
 fi
+cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+cp out/arch/arm64/boot/dtbo.img AnyKernel3
+cp out/arch/arm64/boot/dtb.img AnyKernel3
+
+rm -f *zip
+cd AnyKernel3
+git checkout main &> /dev/null
+zip -r9 "../$ZIPNAME" * -x '*.git*' README.md *placeholder
+fi
+cd ..
+rm -rf AnyKernel3
+rm -rf out/arch/arm64/boot
+echo -e "======================================="
+echo -e "------------Happy Flashing-------------"
+echo -e "======================================="
+echo -e "Completed in $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) !"
+echo "Zip: $ZIPNAME"
+echo "Move Zip into Home Directory"
+mv *.zip ${LOCAL_DIR}
+echo -e "======================================="
