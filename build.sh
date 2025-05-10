@@ -11,8 +11,8 @@
 # Use this script on root of kernel directory
 
 SECONDS=0 # builtin bash timer
-LOCAL_DIR=/home/kidz/
-ZIPNAME="Swordx-OSS-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
+LOCAL_DIR=/workspace/krull-oos/
+ZIPNAME="MIUI-Evils-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
 TC_DIR="${LOCAL_DIR}toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
 GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
