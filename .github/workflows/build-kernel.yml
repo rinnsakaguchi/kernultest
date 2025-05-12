@@ -1,7 +1,8 @@
 name: Build Kernel
 
 on:
-  push:
+  #push:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -34,7 +35,7 @@ jobs:
         run: |
           BUILD_DATE="$(date '+%H:%M %d/%m/%Y')"
           HEAD="$(git rev-parse HEAD)"
-          HEAD_COMMIT="https://github.com/rinnsakaguchi/surya_a12_kernel/commit/$HEAD"
+          HEAD_COMMIT="https://github.com/Yuddciel/Oplus/commit/$HEAD"
           echo -e "${BUILD_DATE}\n\n${HEAD_COMMIT}" > caption.txt
 
       - name: Upload standard build to Telegram
