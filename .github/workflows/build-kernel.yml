@@ -1,8 +1,7 @@
 name: Build Kernel
 
 on:
-  #push:
-  workflow_dispatch:
+  push:
 
 jobs:
   build:
@@ -19,8 +18,7 @@ jobs:
 
       - name: Run standard build script
         run: |
-          sudo apt-get install device-tree-compiler
-          export KBUILD_BUILD_USER=mahiroo
+          export KBUILD_BUILD_USER=nobody
           export KBUILD_BUILD_HOST=android-build
           source build.sh
           echo "ZIPNAME=${ZIPNAME}" >> $GITHUB_ENV
@@ -29,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: standard-artifact
-          path: ${{ env.ZIPNAME }} 
+          path: ${{ env.ZIPNAME }}
