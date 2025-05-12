@@ -2263,6 +2263,7 @@ struct dentry *__d_lookup_rcu(const struct dentry *parent,
 			/* we want a consistent (name,len) pair */
 			if (read_seqcount_retry(&dentry->d_seq, seq)) {
 				cpu_relax();
+				goto seqretry;
 			}
 			if (parent->d_op->d_compare(dentry,
 						    tlen, tname, name) != 0)
