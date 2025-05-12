@@ -135,15 +135,14 @@ tg_fail() {
     )"
 }
 
-# Ship it to the CI channel
-tg_ship "<b>-------- $DRONE_BUILD_NUMBER Build Succeed --------</b>" \
-        "" \
-        "<b>Device:</b> Surya" \
-        "<b>Version:</b> Miui A12" \
-        "<b>Builder:</b> Mahirooo" \
-        "" \
-        "Test Build!"
+    # Ship it to the CI channel
+    tg_ship "<b>-------- $DRONE_BUILD_NUMBER Build Succeed --------</b>" \
+            "" \
+            "<b>Device:</b> Surya" \
+            "<b>Version:</b> MIUI A12" \
+            "<b>Builder:</b> Mahiroooo" \
+            "" \
+            "Note this aosp kernel,u need edit device_feature!"
 }
 
 makekernel
-
