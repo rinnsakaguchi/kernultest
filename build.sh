@@ -90,6 +90,7 @@ git checkout main &> /dev/null
 zip -r9 "../$ZIPNAME" * -x '*.git*' README.md *placeholder
 fi
 cd ..
+
 rm -rf AnyKernel3
 rm -rf out/arch/arm64/boot
 echo -e "======================================="
@@ -97,6 +98,52 @@ echo -e "------------Happy Flashing-------------"
 echo -e "======================================="
 echo -e "Completed in $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) !"
 echo "Zip: $ZIPNAME"
-echo "Move Zip into Home Directory"
-mv *.zip ${LOCAL_DIR}
 echo -e "======================================="
+
+# Telegram
+CHATID="-1002354747626" # Group/channel chatid (use rose/userbot to get it)
+TELEGRAM_TOKEN="7485743487:AAEKPw9ubSKZKit9BDHfNJSTWcWax4STUZs"
+
+# Export Telegram.sh
+TELEGRAM_FOLDER="${HOME}"/telegram
+if ! [ -d "${TELEGRAM_FOLDER}" ]; then
+    git clone https://github.com/fabianonline/telegram.sh/ "${TELEGRAM_FOLDER}"
+fi
+
+TELEGRAM="${TELEGRAM_FOLDER}"/telegram
+tg_cast() {
+	curl -s -X POST https://api.telegram.org/bot"$TELEGRAM_TOKEN"/sendMessage -d disable_web_page_preview="true" -d chat_id="$CHATID" -d "parse_mode=MARKDOWN" -d text="$(
+		for POST in "${@}"; do
+			echo "${POST}"
+		done
+	)" &> /dev/null
+}
+tg_ship() {
+    "${TELEGRAM}" -f "${ZIPNAME}" -t "${TELEGRAM_TOKEN}" -c "${CHATID}" -H \
+    "$(
+                for POST in "${@}"; do
+                        echo "${POST}"
+                done
+    )"
+}
+tg_fail() {
+    "${TELEGRAM}" -f "${LOGS}" -t "${TELEGRAM_TOKEN}" -c "${CHATID}" -H \
+    "$(
+                for POST in "${@}"; do
+                        echo "${POST}"
+                done
+    )"
+}
+
+# Ship it to the CI channel
+tg_ship "<b>-------- $DRONE_BUILD_NUMBER Build Succeed --------</b>" \
+        "" \
+        "<b>Device:</b> Surya" \
+        "<b>Version:</b> Miui A12" \
+        "<b>Builder:</b> Mahirooo" \
+        "" \
+        "Test Build!"
+}
+
+makekernel
+
