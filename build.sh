@@ -21,8 +21,8 @@ AK3_DIR="${LOCAL_DIR}/AnyKernel3"
 DEFCONFIG="surya_defconfig"
 
 export PATH="$CLANG_DIR/bin:$PATH"
-export KBUILD_BUILD_USER="Kidz"
-export KBUILD_BUILD_HOST="Ubuntud"
+export KBUILD_BUILD_USER="Mahirooo"
+export KBUILD_BUILD_HOST="githtod"
 export LD_LIBRARY_PATH="$CLANG_DIR/lib:$LD_LIBRARY_PATH"
 export KBUILD_BUILD_VERSION="1"
 export LOCALVERSION
