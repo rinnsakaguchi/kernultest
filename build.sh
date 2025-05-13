@@ -143,6 +143,3 @@ tg_fail() {
             "<b>Builder:</b> Mahiroooo" \
             "<b>CL:<b> Improve Stability" \
             "Note this aosp kernel,u need edit device_feature!"
-}
-
-makekernel
