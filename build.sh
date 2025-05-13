@@ -12,7 +12,7 @@
 
 SECONDS=0 # builtin bash timer
 LOCAL_DIR=$(pwd)
-ZIPNAME="MIUI-Evils-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
+ZIPNAME="Oxygen:[Mahiro]-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
 TC_DIR="${LOCAL_DIR}toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
 GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
@@ -136,12 +136,12 @@ tg_fail() {
 }
 
     # Ship it to the CI channel
-    tg_ship "<b>-------- $DRONE_BUILD_NUMBER Build Succeed --------</b>" \
+    tg_ship "<b>-------- $DRONE_BUILD_NUMBER Happy Flashing --------</b>" \
             "" \
             "<b>Device:</b> Surya" \
-            "<b>Version:</b> MIUI A12" \
+            "<b>Version:</b> Oxygen" \
             "<b>Builder:</b> Mahiroooo" \
-            "" \
+            "<b>CL:<b> Fake Enforcing" \
             "Note this aosp kernel,u need edit device_feature!"
 }
 
