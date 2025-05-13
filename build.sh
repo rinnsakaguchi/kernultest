@@ -12,7 +12,7 @@
 
 SECONDS=0 # builtin bash timer
 LOCAL_DIR=$(pwd)
-ZIPNAME="Oxygen:[Mahiro]-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
+ZIPNAME="HyperOS:[HiraTeam]-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
 TC_DIR="${LOCAL_DIR}toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
 GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
@@ -139,9 +139,9 @@ tg_fail() {
     tg_ship "<b>-------- $DRONE_BUILD_NUMBER Happy Flashing --------</b>" \
             "" \
             "<b>Device:</b> Surya" \
-            "<b>Version:</b> Oxygen" \
+            "<b>Version:</b> HyperOS" \
             "<b>Builder:</b> Mahiroooo" \
-            "<b>CL:<b> Fake Enforcing" \
+            "<b>CL:<b> Improve Stability" \
             "Note this aosp kernel,u need edit device_feature!"
 }
 
