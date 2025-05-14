@@ -12,7 +12,7 @@
 
 SECONDS=0 # builtin bash timer
 LOCAL_DIR=$(pwd)
-ZIPNAME="MIUI-Evils-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
+ZIPNAME="MIUI:[Mahirooo]-Surya-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
 TC_DIR="${LOCAL_DIR}toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
 GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
@@ -141,8 +141,6 @@ tg_fail() {
             "<b>Device:</b> Surya" \
             "<b>Version:</b> MIUI A12" \
             "<b>Builder:</b> Mahiroooo" \
+            "<b>Changelog:</b> Switch to SukiSU" \
             "" \
             "Note this aosp kernel,u need edit device_feature!"
-}
-
-makekernel
