@@ -141,5 +141,5 @@ tg_fail() {
             "<b>Device:</b> Surya" \
             "<b>Version:</b> HyperOS" \
             "<b>Builder:</b> Mahiroooo" \
-            "<b>CL:</b> Improve Stability" \
+            "<b>CL:</b> Test SukiSU+KPM" \
             "Note this aosp kernel,u need edit device_feature!"
