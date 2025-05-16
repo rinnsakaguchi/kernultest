@@ -11,12 +11,12 @@
 # Use this script on root of kernel directory
 
 SECONDS=0 # builtin bash timer
-LOCAL_DIR=$(pwd)
+LOCAL_DIR=/workspace/krull-oos/
 ZIPNAME="HyperOS:[HiraTeam]-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
-TC_DIR="${LOCAL_DIR}/toolchain"
+TC_DIR="${LOCAL_DIR}toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
-GCC_64_DIR="${LOCAL_DIR}/toolchain/aarch64-linux-android-4.9"
-GCC_32_DIR="${LOCAL_DIR}/toolchain/arm-linux-androideabi-4.9"
+GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
+GCC_32_DIR="${LOCAL_DIR}toolchain/arm-linux-androideabi-4.9"
 AK3_DIR="${LOCAL_DIR}/AnyKernel3"
 DEFCONFIG="surya_defconfig"
 
