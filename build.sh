@@ -13,16 +13,16 @@
 SECONDS=0 # builtin bash timer
 LOCAL_DIR=$(pwd)
 ZIPNAME="HyperOS:[HiraTeam]-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
-TC_DIR="${LOCAL_DIR}toolchain"
+TC_DIR="${LOCAL_DIR}/toolchain"
 CLANG_DIR="${TC_DIR}/clang-rastamod"
-GCC_64_DIR="${LOCAL_DIR}toolchain/aarch64-linux-android-4.9"
-GCC_32_DIR="${LOCAL_DIR}toolchain/arm-linux-androideabi-4.9"
+GCC_64_DIR="${LOCAL_DIR}/toolchain/aarch64-linux-android-4.9"
+GCC_32_DIR="${LOCAL_DIR}/toolchain/arm-linux-androideabi-4.9"
 AK3_DIR="${LOCAL_DIR}/AnyKernel3"
 DEFCONFIG="surya_defconfig"
 
 export PATH="$CLANG_DIR/bin:$PATH"
 export KBUILD_BUILD_USER="Mahirooo"
-export KBUILD_BUILD_HOST="githtod"
+export KBUILD_BUILD_HOST="hirateam"
 export LD_LIBRARY_PATH="$CLANG_DIR/lib:$LD_LIBRARY_PATH"
 export KBUILD_BUILD_VERSION="1"
 export LOCALVERSION
@@ -141,5 +141,5 @@ tg_fail() {
             "<b>Device:</b> Surya" \
             "<b>Version:</b> HyperOS" \
             "<b>Builder:</b> Mahiroooo" \
-            "<b>CL:</b> Test SukiSU+KPM" \
+            "<b>Notes:</b> don't flash this!!" \
             "Note this aosp kernel,u need edit device_feature!"
